@@ -1,0 +1,1 @@
+/Users/huseyintumer/mydocs/huseyin_tumer_case/api/PetstpreApiTest/.allure/allure-2.36.0/bin/allure serve target/allure-results
