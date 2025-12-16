@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Interactive Platform Tour",
+    "description": "Take a self-guided tour of Insider One, with 80+ demos and use cases. No forms. No delays.",
+    "url": "https://insiderone.com/product-demo-hub/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-7.webp"
+  },
+  {
+    "title": "Case Studies",
+    "description": "See how the world's leading brands grow faster with Insider One. Explore real results, and the stories behind them.",
+    "url": "https://insiderone.com/resources/?asset-type=case-studies/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/12/Mac.png"
+  },
+  {
+    "title": "Blog",
+    "description": "News, insights, and ideas to inspire, inform, and help you reach your peak potential and become unstoppable.",
+    "url": "https://insiderone.com/blog/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-2.webp"
+  },
+  {
+    "title": "Ebooks & Guides",
+    "description": "Step-by-step playbooks and guides, packed with proven strategies and learnings, not theory.",
+    "url": "https://insiderone.com/resources/?asset-type=ebook",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-3.png"
+  },
+  {
+    "title": "SMS Template Librarry",
+    "description": "Explore 60+ ready-to-use SMS templates, from our experts, inspired by our customers.",
+    "url": "https://insiderone.com/sms-templates/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-4.webp"
+  },
+  {
+    "title": "Glossary",
+    "description": "A definitive guide to the terms and acronyms that every marketer or customer engagement pro should know.",
+    "url": "https://insiderone.com/glossary/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-5.webp"
+  },
+  {
+    "title": "Whatsapp Explorer",
+    "description": "Explore 100+ real WhatsApp use cases, built for the world's #1 messaging app, including two-way conversations.",
+    "url": "https://insiderone.com/whatsapp-templates/",
+    "imageUrl": "https://insiderone.com/assets/media/2025/11/resource-6.webp"
+  }
+]

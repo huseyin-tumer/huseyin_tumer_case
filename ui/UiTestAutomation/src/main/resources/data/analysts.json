@@ -1,0 +1,184 @@
+[
+  {
+    "buttonText": "Gartner MQ",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-2.webp",
+    "text": "Insider One named leader in the 2023 Gartner Magic Quadrant for Personalization Engines",
+    "url": "/gartner-magic-quadrant-for-personalization-engines-2023/",
+    "actionText": "Access the Report",
+    "image": "https://insiderone.com/assets/media/2025/12/comp-8-Gartner-MQ.webp",
+    "categories": [
+      {
+        "name": "Marketing",
+        "rating": "3.99/5.0"
+      },
+      {
+        "name": "Digital Commerce",
+        "rating": "4.11/5.0"
+      },
+      {
+        "name": "Services and Support",
+        "rating": "3.94/5.0"
+      }
+    ]
+  },
+  {
+    "buttonText": "Gartner VOC MMH",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-2.webp",
+    "text": "Insider One Recognized as a 2025 Gartner Peer Insights™ Customers’ Choice for Multichannel Marketing Hubs",
+    "url": "/gartner-customers-choice-multichannel-marketing-hubs-2025/",
+    "actionText": "Access the Report",
+    "image": "https://insiderone.com/assets/media/2025/11/comp-8-Gartner-MMH.webp",
+    "categories": [
+      {
+        "name": "Product Capabilities",
+        "rating": "4.9/5.0"
+      },
+      {
+        "name": "Sales Experience",
+        "rating": "4.9/5.0"
+      },
+      {
+        "name": "Deployment Experience",
+        "rating": "4.8/5.0"
+      },
+      {
+        "name": "Support Experience",
+        "rating": "4.9/5.0"
+      }
+    ]
+  },
+  {
+    "buttonText": "Gartner VOC Pers.",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-2.webp",
+    "text": "Insider One Recognized as a Gartner Peer Insights™ Customers’ Choice for Personalization Engines ‘25",
+    "url": "",
+    "actionText": "",
+    "image": "https://insiderone.com/assets/media/2025/12/comp-8-Gartner-VOC-Personalization.webp",
+    "categories": [
+      {
+        "name": "Overall Rating",
+        "rating": "4.8/5.0"
+      },
+      {
+        "name": "Support Experience",
+        "rating": "4.9/5.0"
+      },
+      {
+        "name": "Sales Experience",
+        "rating": "4.7/5.0"
+      },
+      {
+        "name": "Willingness to Recommend",
+        "rating": "100/100"
+      }
+    ]
+  },
+  {
+    "buttonText": "Forrester Wave",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-3.webp",
+    "text": "Insider One recognized as a leader in The Forrester Wave: Cross-Channel Campaign Management (Independent Platforms)",
+    "url": "/forrester-cross-channel-campaign-management-2021/",
+    "actionText": "Access the Report",
+    "image": "https://insiderone.com/assets/media/2025/11/comp-8-Forrester-Wave.webp",
+    "categories": [
+      {
+        "name": "Personalization",
+        "rating": ""
+      },
+      {
+        "name": "Innovation Strategy",
+        "rating": ""
+      },
+      {
+        "name": "Platform Architecture",
+        "rating": ""
+      },
+      {
+        "name": "Predictive Analytics",
+        "rating": ""
+      },
+      {
+        "name": "Machine Learning",
+        "rating": ""
+      }
+    ]
+  },
+  {
+    "buttonText": "IDC Omnichannel",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-1.webp",
+    "text": "Insider One named a leader in the IDC MarketScape for Worldwide Omnichannel Marketing Platforms",
+    "url": "/leader-in-idc-omnichannel-marketing-platforms-2023/",
+    "actionText": "Access the Report",
+    "image": "https://insiderone.com/assets/media/2025/11/comp-8-IDC-Omnichannel.webp",
+    "categories": [
+      {
+        "name": "Personalization",
+        "rating": ""
+      },
+      {
+        "name": "Channel Breadth",
+        "rating": ""
+      },
+      {
+        "name": "AI / Machine Learning",
+        "rating": ""
+      }
+    ]
+  },
+  {
+    "buttonText": "IDC AI",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-1.webp",
+    "text": "Insder One is a Leader in the IDC MarketScape: Worldwide AI-Enabled Marketing Platforms for Enterprise Companies 2025",
+    "url": "/leader-in-idc-ai-enabled-marketing-platforms-2025/",
+    "actionText": "Access the Report",
+    "image": "https://insiderone.com/assets/media/2025/11/comp-8-IDC-AI.webp",
+    "categories": [
+      {
+        "name": "AI",
+        "rating": ""
+      },
+      {
+        "name": "Journey Orchestration",
+        "rating": ""
+      },
+      {
+        "name": "Unifying Customer Data",
+        "rating": ""
+      }
+    ]
+  },
+  {
+    "buttonText": "G2",
+    "logo": "https://insiderone.com/assets/media/2025/11/comp-8-logo-4.webp",
+    "text": "Insider One named as the #1 Leader across 11 categories in G2 Winter’26 reports",
+    "url": "/g2/",
+    "actionText": "Find out more",
+    "image": "https://insiderone.com/assets/media/2025/12/g2-hp.webp",
+    "categories": [
+      {
+        "name": "Personalization Software",
+        "rating": ""
+      },
+      {
+        "name": "CDP",
+        "rating": ""
+      },
+      {
+        "name": "Mobile Marketing",
+        "rating": ""
+      },
+      {
+        "name": "SMS Marketing",
+        "rating": ""
+      },
+      {
+        "name": "WhatsApp Marketing",
+        "rating": ""
+      },
+      {
+        "name": "6 more categories",
+        "rating": ""
+      }
+    ]
+  }
+]

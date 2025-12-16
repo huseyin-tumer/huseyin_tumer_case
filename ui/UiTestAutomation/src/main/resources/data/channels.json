@@ -1,0 +1,56 @@
+[
+  {
+    "title": "SMS and RCS",
+    "description": "Connect and convert with SMS and RCS messages for any industry or use case.",
+    "image": "https://insiderone.com/assets/media/2025/11/SMS-and-RCS.webp",
+    "url": "/channels/sms/"
+  },
+  {
+    "title": "Email",
+    "description": "Craft immersive emails that stand out with real-time data, AI, and dynamic content to boost performance.",
+    "image": "https://insiderone.com/assets/media/2025/11/Email.png",
+    "url": "/channels/email/"
+  },
+  {
+    "title": "WhatsApp",
+    "description": "Deliver end-to-end conversational experiences in the #1 messaging app.",
+    "image": "https://insiderone.com/assets/media/2025/11/WhatsApp.webp",
+    "url": "/channels/whatsapp/"
+  },
+  {
+    "title": "Web",
+    "description": "Create unique experiences for each visitor on any device, tailoring every element with data and AI to boost engagement and revenue.",
+    "image": "https://insiderone.com/assets/media/2025/11/Web.png",
+    "url": "/channels/web/"
+  },
+  {
+    "title": "Mobile App",
+    "description": "Deliver tailored in-app experiences that boost stickiness, enhance discovery, and drive conversations & CLTV at scale.",
+    "image": "https://insiderone.com/assets/media/2025/11/Mobile-App.png",
+    "url": "/channels/app/"
+  },
+  {
+    "title": "Push Notifications",
+    "description": "Grab attention with rich push notifications that increase user engagement.",
+    "image": "https://insiderone.com/assets/media/2025/11/Push-Notifications.png",
+    "url": "/channels/web-push/"
+  },
+  {
+    "title": "Site Search",
+    "description": "Help every user find exactly what they're looking for and boost product discovery with AI-powered instant search recommendations.",
+    "image": "https://insiderone.com/assets/media/2025/12/Site-Search.png",
+    "url": "/eureka-search/"
+  },
+  {
+    "title": "InStory",
+    "description": "Increase mobile product discovery with thumbnail to full-screen experiences.",
+    "image": "https://insiderone.com/assets/media/2025/12/Instory.png",
+    "url": "/instory-product-discovery-solution/"
+  },
+  {
+    "title": "Conversational CX",
+    "description": "Engage consumers in two-way conversations across channels including marketing, commerce, and support.",
+    "image": "https://insiderone.com/assets/media/2025/11/Conversational-CX.webp",
+    "url": "/conversational-cx/"
+  }
+]
