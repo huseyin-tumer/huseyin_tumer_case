@@ -40,46 +40,27 @@ class PetApiTest : BaseTest() {
     @Description("Verify that a new pet can be added to the store")
     fun `should create a new pet`() {
         val response = petApi.createPet(testPet)
-        
         assertThat(response.statusCode).isEqualTo(200)
-        
         val createdPet = response.`as`(Pet::class.java)
-        
-        SoftAssertions.assertSoftly {
-            assertThat(createdPet.id).isEqualTo(testPet.id)
-            assertThat(createdPet.name).isEqualTo(testPet.name)
-            assertThat(createdPet.status).isEqualTo(testPet.status)
-        }
+        assertThat(createdPet).isEqualTo(testPet)
     }
 
     @Test
     @Story("Get Pet")
     @Description("Verify that a pet can be retrieved by ID")
     fun `should get pet by id`() {
-        // Ensure pet exists
         petApi.createPet(testPet)
-
         val response = petApi.getPetById(testPet.id!!)
-        
         assertThat(response.statusCode).isEqualTo(200)
-        
         val fetchedPet = response.`as`(Pet::class.java)
-        
-        SoftAssertions.assertSoftly {
-            assertThat(fetchedPet.id).isEqualTo(testPet.id)
-            assertThat(fetchedPet.name).isEqualTo(testPet.name)
-            assertThat(fetchedPet.status).isEqualTo(testPet.status)
-            assertThat(fetchedPet.photoUrls).isEqualTo(testPet.photoUrls)
-            assertThat(fetchedPet.tags).isEqualTo(testPet.tags)
-            assertThat(fetchedPet.category).isEqualTo(testPet.category)
-        }
+        assertThat(fetchedPet).isEqualTo(testPet)
+
     }
 
     @Test
     @Story("Update Pet")
     @Description("Verify that an existing pet can be updated")
     fun `should update an existing pet`() {
-        // Ensure pet exists
         petApi.createPet(testPet)
 
         val updatedPet = testPet.copy(name = "Rex_Updated", status = "sold")
@@ -94,16 +75,8 @@ class PetApiTest : BaseTest() {
         assertThat(petAfterUpdate.statusCode).isEqualTo(200)
         val fetchedPet = petAfterUpdate.`as`(Pet::class.java)
 
-        SoftAssertions.assertSoftly {
-            assertThat(fetchedPet.id).isEqualTo(updatedPet.id)
-            assertThat(fetchedPet.name).isEqualTo(updatedPet.name)
-            assertThat(fetchedPet.status).isEqualTo(updatedPet.status)
-            assertThat(fetchedPet.photoUrls).isEqualTo(updatedPet.photoUrls)
-            assertThat(fetchedPet.tags).isEqualTo(updatedPet.tags)
-            assertThat(fetchedPet.category).isEqualTo(updatedPet.category)
-        }
-
-
+        assertThat(fetchedPet).isNotEqualTo(testPet)
+        assertThat(fetchedPet).isEqualTo(updatedPet)
     }
 
     @Test
