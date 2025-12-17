@@ -45,6 +45,11 @@ class CareersTests : BaseTest() {
             positionsResponse = networkInterceptor.stopListeningUntilRequestLoaded(leverPositionsUrl)
             positions = Position.parsePositions(positionsResponse)
             assertPositions(positions) // asserts istanbul turkey located quality assurance positions
+            assertPositions(
+                titleContains = "Quality Assurance",
+                department = "Quality Assurance",
+                location = "Istanbul, Turkiye"
+            )
 
         }
     }

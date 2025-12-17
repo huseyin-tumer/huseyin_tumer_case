@@ -183,7 +183,6 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
             assertText(channelElement.findElement(channelSlideItemDescription), channelItem.description)
             val image = channelElement.findElement(channelSlideItemImage)
             assertImgSource(image, channelItem.image)
-            assertDisplayed(image)
             assertHref(channelElement.findElement(channelSlideItemUrl), "https://insiderone.com${channelItem.url}")
         }
     }

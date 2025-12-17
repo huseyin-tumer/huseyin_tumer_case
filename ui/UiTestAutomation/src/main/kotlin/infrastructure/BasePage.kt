@@ -3,6 +3,7 @@ package infrastructure
 import org.awaitility.Awaitility
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.`is`
@@ -96,6 +97,17 @@ abstract class BasePage(protected val driver: WebDriver) {
         """.trimIndent()
     ) {
         assertThat(message, element.text, equalTo(text))
+    }
+
+    protected fun assertTextContains(
+        element: WebElement,
+        text: String,
+        message: String = """
+            Element text assertion failed
+            Selector ${element.getSelector()}
+        """.trimIndent()
+    ) {
+        assertThat(message, element.text, containsString(text))
     }
 
     protected fun waitForText(element: WebElement, text: String) {

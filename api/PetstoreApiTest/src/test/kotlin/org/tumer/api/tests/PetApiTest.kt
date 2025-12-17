@@ -12,6 +12,8 @@ import org.tumer.api.infrastructure.BaseTest
 import org.tumer.model.Category
 import org.tumer.model.Pet
 import org.tumer.model.Tag
+import org.tumer.model.ApiResponse
+import java.io.File
 import kotlin.random.Random
 
 @Epic("Petstore API")
@@ -142,4 +144,32 @@ class PetApiTest : BaseTest() {
         assertThat(response.statusCode).isEqualTo(404)
         assertThat(response.jsonPath().getString("message")).isEqualTo("Pet not found")
     }
+
+    @Test
+    @Story("Upload Image")
+    @Description("Verify that an image can be uploaded for a pet")
+    fun `should upload image for a pet`() {
+        petApi.createPet(testPet)
+
+        val file = File.createTempFile("test-image", ".png")
+        file.writeBytes(ByteArray(10) { 0 }) // Dummy content
+        file.deleteOnExit()
+
+        val additionalMetadata = "Test Metadata"
+
+        val response = petApi.uploadImage(testPet.id!!, additionalMetadata, file)
+
+        assertThat(response.statusCode).isEqualTo(200)
+
+        val apiResponse = response.`as`(ApiResponse::class.java)
+
+        SoftAssertions.assertSoftly {
+            assertThat(apiResponse.code).isEqualTo(200)
+            assertThat(apiResponse.message).contains(additionalMetadata)
+            assertThat(apiResponse.message).contains("File uploaded to")
+        }
+    }
+
+    
+    
 }

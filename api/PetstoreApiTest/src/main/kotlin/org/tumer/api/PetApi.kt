@@ -43,4 +43,15 @@ class PetApi {
             .`when`()
             .get("/pet/findByStatus")
     }
+
+    fun uploadImage(petId: Long, additionalMetadata: String, file: java.io.File): Response {
+        return given()
+            .spec(ApiClient.requestSpec)
+            .contentType("multipart/form-data")
+            .pathParam("petId", petId)
+            .formParam("additionalMetadata", additionalMetadata)
+            .multiPart("file", file)
+            .`when`()
+            .post("/pet/{petId}/uploadImage")
+    }
 }

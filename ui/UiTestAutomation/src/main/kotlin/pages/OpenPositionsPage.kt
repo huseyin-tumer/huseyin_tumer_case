@@ -39,4 +39,15 @@ class OpenPositionsPage(driver: WebDriver) : BasePage(driver) {
         }
     }
 
+    fun assertPositions(department: String, location: String, titleContains: String) {
+        val positionsElements = waitForElementsVisible(positions)
+        positionsElements.forEach { positionElement ->
+            assertTextContains(positionElement.findElement(positionTitle), titleContains)
+            assertText(positionElement.findElement(positionDepartment), department)
+            assertText(positionElement.findElement(positionLocation), location)
+        }
+
+    }
+
+
 }
