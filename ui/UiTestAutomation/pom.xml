@@ -51,13 +51,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-                <configuration>
-                    <testFailureIgnore>false</testFailureIgnore>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
@@ -66,6 +59,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.3</version>
                 <configuration>
+                    <testFailureIgnore>false</testFailureIgnore>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
