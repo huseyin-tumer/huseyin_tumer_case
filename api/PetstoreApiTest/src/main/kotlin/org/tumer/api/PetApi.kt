@@ -1,11 +1,13 @@
 package org.tumer.api
 
+import io.qameta.allure.Step
 import io.restassured.RestAssured.given
 import io.restassured.response.Response
 import org.tumer.model.Pet
 
 class PetApi {
 
+    @Step("Create a new pet: {pet}")
     fun createPet(pet: Pet): Response {
         return given()
             .spec(ApiClient.requestSpec)
@@ -14,6 +16,7 @@ class PetApi {
             .post("/pet")
     }
 
+    @Step("Update an existing pet: {pet}")
     fun updatePet(pet: Pet): Response {
         return given()
             .spec(ApiClient.requestSpec)
@@ -22,6 +25,7 @@ class PetApi {
             .put("/pet")
     }
 
+    @Step("Get pet by id: {petId}")
     fun getPetById(petId: Long): Response {
         return given()
             .spec(ApiClient.requestSpec)
@@ -29,6 +33,7 @@ class PetApi {
             .get("/pet/$petId")
     }
 
+    @Step("Delete pet by id: {petId}")
     fun deletePet(petId: Long): Response {
         return given()
             .spec(ApiClient.requestSpec)
@@ -36,6 +41,7 @@ class PetApi {
             .delete("/pet/$petId")
     }
 
+    @Step("Find pets by status: {status}")
     fun findPetsByStatus(status: String): Response {
         return given()
             .spec(ApiClient.requestSpec)
@@ -44,6 +50,7 @@ class PetApi {
             .get("/pet/findByStatus")
     }
 
+    @Step("Upload image for pet id={petId} with metadata={additionalMetadata}")
     fun uploadImage(petId: Long, additionalMetadata: String, file: java.io.File): Response {
         return given()
             .spec(ApiClient.requestSpec)
