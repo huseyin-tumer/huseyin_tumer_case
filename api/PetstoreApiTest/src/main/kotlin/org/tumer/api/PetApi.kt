@@ -4,6 +4,7 @@ import io.qameta.allure.Step
 import io.restassured.RestAssured.given
 import io.restassured.response.Response
 import org.tumer.model.Pet
+import java.io.File
 
 class PetApi {
 
@@ -51,7 +52,7 @@ class PetApi {
     }
 
     @Step("Upload image for pet id={petId} with metadata={additionalMetadata}")
-    fun uploadImage(petId: Long, additionalMetadata: String, file: java.io.File): Response {
+    fun uploadImage(petId: Long, additionalMetadata: String, file: File): Response {
         return given()
             .spec(ApiClient.requestSpec)
             .contentType("multipart/form-data")
