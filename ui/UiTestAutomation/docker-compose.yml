@@ -7,7 +7,7 @@ services:
       - 4444:4444
 
   chrome:
-    image: seleniarm/node-chromium
+    image: selenium/node-chrome
     shm_size: 2gb
     depends_on:
       - selenium
@@ -40,7 +40,7 @@ services:
       - execution_mode=grid
       - grid_url=http://selenium:4444
       - browser=chrome
-      - headless=true
+      - headless=false
     volumes:
       - ./target/allure-results:/app/target/allure-results
-    command: /bin/sh -c "mvn clean test -Dbrowser=$$browser -Dheadless=$$headless -Dexecution_mode=$$execution_mode -Dgrid_url=$$grid_url"
+    command: /bin/sh -c "mvn test -Dbrowser=$$browser -Dheadless=$$headless -Dexecution_mode=$$execution_mode -Dgrid_url=$$grid_url"

@@ -1,18 +1,20 @@
 package utils
 
 import infrastructure.DriverHelper
+import infrastructure.Environment
 import org.awaitility.Awaitility
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.devtools.HasDevTools
 import org.openqa.selenium.devtools.v141.fetch.Fetch
 import org.openqa.selenium.devtools.v141.fetch.model.HeaderEntry
+import org.openqa.selenium.devtools.v141.fetch.model.RequestPattern
 import org.openqa.selenium.devtools.v141.network.Network
 import org.openqa.selenium.devtools.v141.network.model.RequestId
 import org.openqa.selenium.devtools.v141.network.model.RequestWillBeSent
 import org.openqa.selenium.devtools.v141.network.model.ResourceType
 import org.openqa.selenium.devtools.v141.network.model.ResponseReceived
-import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.remote.Augmenter
 import java.time.Duration
 import java.util.Base64
 import java.util.Optional
@@ -29,7 +31,7 @@ data class NetworkLog(
     var isCompleted: Boolean = false
 )
 
-class NetworkInterceptor(private val driver: WebDriver) {
+class NetworkInterceptor(private var driver: WebDriver) {
 
     private val networkLogs = ConcurrentHashMap<String, NetworkLog>()
 
@@ -255,15 +257,17 @@ class NetworkInterceptor(private val driver: WebDriver) {
     fun startListening() {
 
         val isDriverFirefox = DriverHelper.isFirefox(driver)
-        if (isDriverFirefox) {
+
+        if (isDriverFirefox || Environment.isGridExecution) {
             ensureJsHooksInstalled()
             (driver as JavascriptExecutor).executeScript("window.__networkLogs = [];")
         } else {
+            driver = Augmenter().augment(driver)
+            networkLogs.clear()
+            val devTools = (driver as HasDevTools).devTools
             if (driver !is HasDevTools) {
                 throw UnsupportedOperationException("Driver must implement HasDevTools")
             }
-            networkLogs.clear()
-            val devTools = (driver as HasDevTools).devTools
             devTools.createSession()
             devTools.send(
                 Network.enable(
@@ -311,96 +315,98 @@ class NetworkInterceptor(private val driver: WebDriver) {
     }
 
     fun stopListeningUntilRequestLoaded(urlPart: String, timeoutInSeconds: Long = 25): String {
-        when (driver) {
-            is FirefoxDriver -> {
-                ensureJsHooksInstalled()
 
-                val endTime = System.currentTimeMillis() + timeoutInSeconds * 1000
+        val isDriverFirefox = DriverHelper.isFirefox(driver)
 
-                while (System.currentTimeMillis() < endTime) {
-                    Thread.sleep(200)
+        if (isDriverFirefox || Environment.isGridExecution) {
+            ensureJsHooksInstalled()
 
-                    @Suppress("UNCHECKED_CAST")
-                    val logs = (driver as JavascriptExecutor).executeScript(
-                        """
+            val endTime = System.currentTimeMillis() + timeoutInSeconds * 1000
+
+            while (System.currentTimeMillis() < endTime) {
+                Thread.sleep(200)
+
+                @Suppress("UNCHECKED_CAST")
+                val logs = (driver as JavascriptExecutor).executeScript(
+                    """
                 if (!window.__networkLogs) {
                   return [];
                 }
                 return window.__networkLogs;
                 """.trimIndent()
-                    ) as? List<Any?> ?: emptyList()
+                ) as? List<Any?> ?: emptyList()
 
-                    val match = logs.firstOrNull { entry ->
-                        val map = entry as? Map<*, *> ?: return@firstOrNull false
-                        val url = map["url"]?.toString() ?: ""
-                        val completed = map["completed"] as? Boolean ?: false
-                        url.contains(urlPart) && completed
-                    } as? Map<*, *>
+                val match = logs.firstOrNull { entry ->
+                    val map = entry as? Map<*, *> ?: return@firstOrNull false
+                    val url = map["url"]?.toString() ?: ""
+                    val completed = map["completed"] as? Boolean ?: false
+                    url.contains(urlPart) && completed
+                } as? Map<*, *>
 
-                    if (match != null) {
-                        val body = match["body"]?.toString()
-                        if (body != null) {
-                            return body
-                        } else {
-                            throw RuntimeException("Matched request for '$urlPart' but body was null or undefined.")
-                        }
+                if (match != null) {
+                    val body = match["body"]?.toString()
+                    if (body != null) {
+                        return body
+                    } else {
+                        throw RuntimeException("Matched request for '$urlPart' but body was null or undefined.")
                     }
                 }
-
-                throw RuntimeException("Timeout waiting for network request containing '$urlPart'")
             }
 
-            else -> {
-                if (driver !is HasDevTools) {
-                    throw UnsupportedOperationException("Driver must implement HasDevTools")
-                }
-                val devTools = (driver as HasDevTools).devTools
+            throw RuntimeException("Timeout waiting for network request containing '$urlPart'")
+        } else {
 
-                try {
-                    var foundLog: NetworkLog? = null
+            driver = Augmenter().augment(driver)
+            val devTools = (driver as HasDevTools).devTools
 
-                    Awaitility.await()
-                        .atMost(Duration.ofSeconds(timeoutInSeconds))
-                        .pollInterval(Duration.ofMillis(100))
-                        .until {
-                            foundLog = networkLogs.values.find {
-                                it.url.contains(urlPart) && (it.isCompleted || it.responseStatus != null)
-                            }
-                            foundLog != null && foundLog!!.isCompleted
-                        }
+            if (driver !is HasDevTools) {
+                throw UnsupportedOperationException("Driver must implement HasDevTools")
+            }
 
-                    // Once found, we can try to fetch the body
-                    if (foundLog != null) {
-                        try {
-                            // We might need to wait slightly for body to be available if it's large,
-                            // but responseReceived usually means headers are there.
-                            // LoadingFinished is the proper event for body availability.
-                            // However, let's try fetching.
-                            val responseBodyInfo = devTools.send(Network.getResponseBody(foundLog!!.id))
-                            foundLog!!.responseBody = if (responseBodyInfo.base64Encoded) {
-                                String(Base64.getDecoder().decode(responseBodyInfo.body))
-                            } else {
-                                responseBodyInfo.body
-                            }
-                        } catch (e: Exception) {
-                            println("Failed to fetch body for ${foundLog!!.url}: ${e.message}")
+            try {
+                var foundLog: NetworkLog? = null
+
+                Awaitility.await()
+                    .atMost(Duration.ofSeconds(timeoutInSeconds))
+                    .pollInterval(Duration.ofMillis(100))
+                    .until {
+                        foundLog = networkLogs.values.find {
+                            it.url.contains(urlPart) && (it.isCompleted || it.responseStatus != null)
                         }
-                        return foundLog!!.responseBody!!
-                    } else {
-                        // Determine if we found it but it didn't complete
-                        val partialLog = networkLogs.values.find { it.url.contains(urlPart) }
-                        if (partialLog != null) {
-                            throw RuntimeException("Found request for $urlPart but it did not complete loading within ${timeoutInSeconds}s. Status: ${partialLog.responseStatus}")
-                        }
-                        throw RuntimeException("Strict timeout reached: Request matching '$urlPart' not found.")
+                        foundLog != null && foundLog!!.isCompleted
                     }
 
-                } finally {
-                    // Stop listening as requested
-                    devTools.clearListeners()
-                    // Optional: Disable network to save overhead, if we really want to "stop"
-                    // devTools.send(Network.disable())
+                // Once found, we can try to fetch the body
+                if (foundLog != null) {
+                    try {
+                        // We might need to wait slightly for body to be available if it's large,
+                        // but responseReceived usually means headers are there.
+                        // LoadingFinished is the proper event for body availability.
+                        // However, let's try fetching.
+                        val responseBodyInfo = devTools.send(Network.getResponseBody(foundLog!!.id))
+                        foundLog!!.responseBody = if (responseBodyInfo.base64Encoded) {
+                            String(Base64.getDecoder().decode(responseBodyInfo.body))
+                        } else {
+                            responseBodyInfo.body
+                        }
+                    } catch (e: Exception) {
+                        println("Failed to fetch body for ${foundLog!!.url}: ${e.message}")
+                    }
+                    return foundLog!!.responseBody!!
+                } else {
+                    // Determine if we found it but it didn't complete
+                    val partialLog = networkLogs.values.find { it.url.contains(urlPart) }
+                    if (partialLog != null) {
+                        throw RuntimeException("Found request for $urlPart but it did not complete loading within ${timeoutInSeconds}s. Status: ${partialLog.responseStatus}")
+                    }
+                    throw RuntimeException("Strict timeout reached: Request matching '$urlPart' not found.")
                 }
+
+            } finally {
+                // Stop listening as requested
+                devTools.clearListeners()
+                // Optional: Disable network to save overhead, if we really want to "stop"
+                // devTools.send(Network.disable())
             }
         }
     }
@@ -409,7 +415,7 @@ class NetworkInterceptor(private val driver: WebDriver) {
 
         val isDriverFirefox = DriverHelper.isFirefox(driver)
 
-        if (isDriverFirefox) {
+        if (isDriverFirefox || Environment.isGridExecution) {
             // Fallback: JS-level mocking on current page (works for Firefox without DevTools)
             if (driver !is JavascriptExecutor) {
                 throw UnsupportedOperationException("Driver must support JavaScript execution")
@@ -433,18 +439,19 @@ class NetworkInterceptor(private val driver: WebDriver) {
                 status
             )
         } else {
+            driver = Augmenter().augment(driver)
             if (driver !is HasDevTools) {
                 throw UnsupportedOperationException("Driver must implement HasDevTools")
             }
             val devTools = (driver as HasDevTools).devTools
             devTools.createSession()
 
-            val xhrPattern = org.openqa.selenium.devtools.v141.fetch.model.RequestPattern(
+            val xhrPattern = RequestPattern(
                 Optional.of("*"),
                 Optional.of(ResourceType.XHR),
                 Optional.empty()
             )
-            val fetchPattern = org.openqa.selenium.devtools.v141.fetch.model.RequestPattern(
+            val fetchPattern = RequestPattern(
                 Optional.of("*"),
                 Optional.of(ResourceType.FETCH),
                 Optional.empty()

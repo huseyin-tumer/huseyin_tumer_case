@@ -16,4 +16,9 @@ object Environment {
     val baseUrl: String by lazy {
         environmentProperties.getProperty("base.url") ?: throw RuntimeException("base.url not found in properties")
     }
+
+    val isGridExecution: Boolean by lazy {
+        val executionMode = System.getProperty("execution_mode") ?: System.getenv("execution_mode") ?: "local"
+        executionMode.equals("grid", ignoreCase = true)
+    }
 }

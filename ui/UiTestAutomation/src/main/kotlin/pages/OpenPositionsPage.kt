@@ -17,7 +17,7 @@ class OpenPositionsPage(driver: WebDriver) : BasePage(driver) {
     private val viewRoleLink = By.tagName("a")
 
     fun selectLocation(text: String) {
-        scrollOriginFromElement(locationSelector, 0, -400)
+        scrollOriginFromElement(locationSelector, 0, -500)
         selectInputOption(locationSelector, text)
     }
 

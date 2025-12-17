@@ -21,26 +21,28 @@ object DriverFactory {
             lateinit var driver: WebDriver
             val executionMode = System.getProperty("execution_mode") ?: System.getenv("execution_mode") ?: "local"
             val isHeadless = (System.getProperty("headless") ?: System.getenv("headless") ?: "false").toBoolean()
+            val isGridExecution = executionMode.equals("grid", ignoreCase = true)
+            val remoteUrl = System.getProperty("grid_url") ?: System.getenv("grid_url") ?: "http://localhost:4444"
 
             driver = if (browser == "firefox") {
-                val options = FirefoxOptions()
-                if (isHeadless) {
-                    options.addArguments("--headless")
+                val options = FirefoxOptions().apply {
+                    if (isHeadless) {
+                        addArguments("--headless")
+                    }
                 }
-                if (executionMode.equals("grid", ignoreCase = true)) {
-                    val remoteUrl = System.getProperty("grid_url") ?: System.getenv("grid_url") ?: "http://localhost:4444"
+                if (isGridExecution) {
                     RemoteWebDriver(URL(remoteUrl), options)
                 } else {
                     FirefoxDriver(options)
                 }
             } else {
-                val options = ChromeOptions()
-                options.addArguments("--remote-allow-origins=*")
-                if (isHeadless) {
-                    options.addArguments("--headless=new")
+                val options = ChromeOptions().apply {
+                    addArguments("--remote-allow-origins=*")
+                    if (isHeadless) {
+                        addArguments("--headless=new")
+                    }
                 }
-                if (executionMode.equals("grid", ignoreCase = true)) {
-                    val remoteUrl = System.getProperty("grid_url") ?: System.getenv("grid_url") ?: "http://localhost:4444"
+                if (isGridExecution) {
                     RemoteWebDriver(URL(remoteUrl), options)
                 } else {
                     ChromeDriver(options)
