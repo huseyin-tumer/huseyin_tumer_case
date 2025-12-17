@@ -2,6 +2,7 @@ package pageFunctions
 
 import infrastructure.BasePage
 import infrastructure.shouldHaveText
+import io.qameta.allure.Step
 import models.AiItem
 import models.AnalystItem
 import models.CapabilityItem
@@ -75,6 +76,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val capabilitiesButtons = By.cssSelector("div.homepage-capabilities-body-buttons>div")
     private val capabilitySlide = By.cssSelector("div.swiper-slide:not(.clone)")
 
+    @Step("Verify homepage differentiator items content and images")
     fun assertDifferentiators(differentiatorsItems: Array<DifferentiatorsItem> = initialDifferentiators) {
         assertElementsLength(differentiatorItemsSelector, differentiatorsItems.size)
         for (i in 0 until differentiatorsItems.size) {
@@ -97,6 +99,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
         }
     }
 
+    @Step("Verify each capability tab updates the slide content correctly")
     fun assertCapabilities(capabilities: Array<CapabilityItem> = initialCapabilities) {
         val section = find(capabilitiesSection)
 
@@ -151,6 +154,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val aiDescription = By.cssSelector("div.description")
     private val action = By.cssSelector("div.action a")
 
+    @Step("Verify AI items subtitles, titles, descriptions and links")
     fun assertAi(aiItems: Array<AiItem> = initialAiItems) {
         val aiElements = findElements(aiContent)
         for (i in aiItems.indices) {
@@ -173,6 +177,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val channelSlideItemImage = By.cssSelector("div.slide-item-media img")
     private val channelSlideItemUrl = By.cssSelector("a")
 
+    @Step("Verify channel cards content, images and links")
     fun assertChannels(channelItems: Array<ChannelItem> = initialChannelItems) {
         for (i in channelItems.indices) {
             val channelItem = channelItems[i]
@@ -196,6 +201,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val caseStudyInfoNumber = By.cssSelector("div.info-text .number")
     private val caseStudyInfoText = By.cssSelector("div.info-text .text")
 
+    @Step("Verify case study cards content, images and links")
     fun assertCaseStudies(caseStudyItems: Array<CaseStudyItem> = initialCaseStudyItems) {
         for (i in caseStudyItems.indices) {
             val caseStudyItem = caseStudyItems[i]
@@ -237,6 +243,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val analystCategories = By.cssSelector("div.slide-item-content-categories a")
     private val analystMedia = By.cssSelector("div.slide-item-media img")
 
+    @Step("Verify analyst slides content, links and categories")
     fun assertAnalysts(analystItems: Array<AnalystItem> = initialAnalystItems) {
         scrollTo(analystBody)
         val analystSlides = findElements(analystsSlides)
@@ -290,6 +297,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
     private val resourceSlideDescription = By.cssSelector("div.description")
     private val resourceSlideLink = By.cssSelector("a")
 
+    @Step("Verify resources carousel cards content, images and navigation")
     fun assertResources(resourceItems: Array<ResourceItem> = initialResourceItems) {
         val resourceSectionElement = find(resourceSection)
 

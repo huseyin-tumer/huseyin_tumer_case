@@ -21,7 +21,18 @@ class HomePageSectionTest : BaseTest() {
 
     @Test
     fun `all sections`() {
-        //mainPage.ass() todo
+        mainPage.apply {
+            assertHeroSectionLoaded()
+            assertSocialProofSectionLoaded()
+            assertDifferentiatorSection()
+            assertCapabilitiesSection()
+            assertAiSection()
+            assertChannelsSection()
+            assertCaseStudySection()
+            assertAnalystSection()
+            assertIntegrationsSection()
+            assertResourcesSection()
+        }
     }
 
     @Test

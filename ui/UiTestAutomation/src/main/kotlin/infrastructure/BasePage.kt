@@ -1,5 +1,6 @@
 package infrastructure
 
+import io.qameta.allure.Step
 import org.awaitility.Awaitility
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -49,6 +50,7 @@ abstract class BasePage(protected val driver: WebDriver) {
     }
 
 
+    @Step("Verify element located by {selector} is visible")
     protected fun shouldBeVisible(
         selector: By,
         message: String = "Element should be visible, selector: ${selector.toString()}"
@@ -69,6 +71,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         js.executeScript("arguments[0].click();", element)
     }
 
+    @Step("Verify select input {locator} has option \"{option}\"")
     protected fun assertSelectInputHasOption(locator: By, option: String) {
         val options = find(locator).findElements(By.tagName("option")).map { it.text }
         assertThat("option not found in select input options", options, hasItem(option))
@@ -79,6 +82,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         Select(find(locator)).selectByVisibleText(option)
     }
 
+    @Step("Verify element located by {locator} has exact text \"{text}\"")
     protected fun assertText(
         locator: By, text: String, message: String = """
         Element text assertion failed
@@ -88,6 +92,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, find(locator).text, equalTo(text))
     }
 
+    @Step("Verify element {element} has exact text \"{text}\"")
     protected fun assertText(
         element: WebElement,
         text: String,
@@ -99,6 +104,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, element.text, equalTo(text))
     }
 
+    @Step("Verify element {element} text contains \"{text}\"")
     protected fun assertTextContains(
         element: WebElement,
         text: String,
@@ -114,6 +120,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         wait.until(ExpectedConditions.textToBePresentInElement(element, text))
     }
 
+    @Step("Verify element located by {locator} has attribute \"{attribute}\" = \"{value}\"")
     protected fun assertAttribute(
         locator: By,
         attribute: String,
@@ -127,6 +134,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, find(locator).getAttribute(attribute), equalTo(value))
     }
 
+    @Step("Verify element {element} has attribute \"{attribute}\" = \"{value}\"")
     protected fun assertAttribute(
         element: WebElement,
         attribute: String,
@@ -139,6 +147,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, element.getAttribute(attribute), equalTo(value))
     }
 
+    @Step("Verify attribute \"{attribute}\" of element {element} contains value \"{value}\"")
     protected fun assertAttributeHasValue(
         element: WebElement,
         attribute: String,
@@ -153,6 +162,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, attributes, hasItem(value))
     }
 
+    @Step("Verify element {element} has href \"{value}\"")
     protected fun assertHref(
         element: WebElement,
         value: String,
@@ -163,6 +173,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, element.getAttribute("href"), equalTo(value))
     }
 
+    @Step("Verify element located by {locator} has href \"{value}\"")
     protected fun assertHref(
         locator: By,
         value: String,
@@ -173,6 +184,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertThat(message, find(locator).getAttribute("href"), equalTo(value))
     }
 
+    @Step("Verify image located by {locator} has src \"{src}\"")
     fun assertImgSource(
         locator: By,
         src: String,
@@ -184,6 +196,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertAttribute(locator, "src", src, message)
     }
 
+    @Step("Verify image element {element} has src \"{src}\"")
     fun assertImgSource(
         element: WebElement, src: String,
         message: String = """
@@ -194,6 +207,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         assertAttribute(element, "src", src, message)
     }
 
+    @Step("Verify elements located by {locator} count is {length}")
     fun assertElementsLength(locator: By, length: Int, message: String? = null) {
         if (message == null)
             assertThat(findElements(locator).size, equalTo(length))
@@ -201,6 +215,7 @@ abstract class BasePage(protected val driver: WebDriver) {
             assertThat(message, findElements(locator).size, equalTo(length))
     }
 
+    @Step("Verify element list size is {length}")
     fun assertElementsLength(element: List<WebElement>, length: Int, message: String? = null) {
         if (message == null)
             assertThat(element.size, equalTo(length))
@@ -208,6 +223,7 @@ abstract class BasePage(protected val driver: WebDriver) {
             assertThat(message, element.size, equalTo(length))
     }
 
+    @Step("Verify element {element} is displayed")
     fun assertDisplayed(
         element: WebElement,
         message: String = """
@@ -292,6 +308,7 @@ abstract class BasePage(protected val driver: WebDriver) {
             }
     }
 
+    @Step("Verify current URL path ends with \"{endsWith}\"")
     fun assertUrlPathEndsWith(endsWith: String) {
         assertThat(driver.currentUrl, Matchers.endsWith(endsWith))
     }

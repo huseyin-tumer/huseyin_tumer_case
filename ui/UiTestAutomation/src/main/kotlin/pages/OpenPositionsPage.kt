@@ -1,6 +1,7 @@
 package pages
 
 import infrastructure.BasePage
+import io.qameta.allure.Step
 import models.Position
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
@@ -20,10 +21,12 @@ class OpenPositionsPage(driver: WebDriver) : BasePage(driver) {
         selectInputOption(locationSelector, text)
     }
 
+    @Step("Verify selected department filter is \"{option}\"")
     fun assertDepartmentSelected(option: String) {
         assertText(find(departmentSelector).findElement(By.cssSelector("option[selected='selected']")), option)
     }
 
+    @Step("Verify open positions list matches expected positions")
     fun assertPositions(expectedPositions: Array<Position>) {
         val positionsElements = waitForElementsVisible(positions)
         assertElementsLength(positionsElements, expectedPositions.size)
@@ -39,6 +42,7 @@ class OpenPositionsPage(driver: WebDriver) : BasePage(driver) {
         }
     }
 
+    @Step("Verify all listed positions match filters: department=\"{department}\", location=\"{location}\", title contains \"{titleContains}\"")
     fun assertPositions(department: String, location: String, titleContains: String) {
         val positionsElements = waitForElementsVisible(positions)
         positionsElements.forEach { positionElement ->

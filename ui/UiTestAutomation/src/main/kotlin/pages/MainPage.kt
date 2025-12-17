@@ -2,6 +2,7 @@ package pages
 
 import infrastructure.BasePage
 import infrastructure.Environment
+import io.qameta.allure.Step
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.emptyString
 import org.hamcrest.Matchers.not
@@ -51,12 +52,14 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         click(acceptAllCookiesButton)
     }
 
+    @Step("Verify main page is loaded")
     fun assertMainPageLoaded() {
         assertThat("Could not get page title", driver.title, not(emptyString()))
         shouldBeVisible(logo, "Logo is not visible")
         navBar.assertNavBarLoaded()
     }
 
+    @Step("Verify hero section is fully loaded")
     fun assertHeroSectionLoaded() {
         sectionFunctions.scrollToSection("homepage-hero")
         shouldBeVisible(heroSection, "Home Page Block is not visible")
@@ -66,6 +69,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         shouldBeVisible(heroSectionRedirectButton, "Redirect Button is not visible")
     }
 
+    @Step("Verify social proof section is fully loaded")
     fun assertSocialProofSectionLoaded() {
         sectionFunctions.scrollToSection("homepage-social-proof")
         shouldBeVisible(socialProofSection, "Social Proof is not visible")
@@ -80,11 +84,13 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         )
     }
 
+    @Step("Verify core differentiators section is fully loaded")
     fun assertDifferentiatorSection() {
         sectionFunctions.scrollToSection("homepage-core-differentiators")
         sectionFunctions.assertDifferentiators()
     }
 
+    @Step("Verify capabilities section content and carousel")
     fun assertCapabilitiesSection() {
         val section = sectionFunctions.scrollToSection("homepage-capabilities")
         //waitUtil.scrollPageUntilElementAttributeValueContains(headerNavigation, "class", "header-light")
@@ -100,6 +106,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         sectionFunctions.assertCapabilities()
     }
 
+    @Step("Verify AI section header and AI items")
     fun assertAiSection() {
         sectionFunctions.scrollToSection("homepage-insider-one-ai")
         assertText(aiHeaderTitle, "Meet Sirius AI™\nThe most complete AI solution for customer engagement")
@@ -107,6 +114,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         sectionFunctions.assertAi()
     }
 
+    @Step("Verify channels section header and channel cards")
     fun assertChannelsSection() {
         sectionFunctions.scrollToSection("homepage-channels")
         assertText(channelTitle, "Unmatched channel breadth\nfor unstoppable reach")
@@ -117,6 +125,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         sectionFunctions.assertChannels()
     }
 
+    @Step("Verify case study section header, description and link")
     fun assertCaseStudySection() {
         sectionFunctions.scrollToSection("homepage-case-study")
         assertText(find(caseStudySection).findElement(By.cssSelector(".title")), "What brands achieve with Insider One")
@@ -132,6 +141,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         sectionFunctions.assertCaseStudies()
     }
 
+    @Step("Verify analyst section header, description and slides")
     fun assertAnalystSection() {
         val analystSection = sectionFunctions.scrollToSection("homepage-analyst")
         assertText(
@@ -147,6 +157,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         sectionFunctions.assertAnalysts()
     }
 
+    @Step("Verify integrations section title, description and image")
     fun assertIntegrationsSection() {
         val integrationSectionElement = sectionFunctions.scrollToSection("homepage-integrations")
         scrollTo(integrationSectionElement)
@@ -172,6 +183,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
 
     }
 
+    @Step("Verify resources section title and resource cards")
     fun assertResourcesSection() {
         val section = sectionFunctions.scrollToSection("homepage-resources")
         assertText(section.findElement(By.cssSelector("h2.animated-text")), "ExploreResources")
