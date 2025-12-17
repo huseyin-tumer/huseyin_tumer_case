@@ -1,0 +1,1 @@
+.allure/allure-2.36.0/bin/allure serve target/allure-results

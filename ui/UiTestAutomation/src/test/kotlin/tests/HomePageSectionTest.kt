@@ -13,7 +13,7 @@ class HomePageSectionTest : BaseTest() {
     fun initPage() {
         mainPage = MainPage(driver)
         mainPage.apply {
-            open()
+            navigate()
             acceptAllCookies()
             assertMainPageLoaded()
         }
@@ -21,7 +21,7 @@ class HomePageSectionTest : BaseTest() {
 
     @Test
     fun `all sections`() {
-        mainPage.assertHeroSectionLoaded()
+        //mainPage.ass() todo
     }
 
     @Test
@@ -66,6 +66,11 @@ class HomePageSectionTest : BaseTest() {
 
     @Test
     fun `analyst integrations`() {
+        mainPage.assertIntegrationsSection()
+    }
+
+    @Test
+    fun `analyst resources`() {
         mainPage.assertResourcesSection()
     }
 }

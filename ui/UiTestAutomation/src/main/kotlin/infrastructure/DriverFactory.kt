@@ -3,6 +3,8 @@ package infrastructure
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
 import org.openqa.selenium.remote.RemoteWebDriver
 import java.net.URL
 import java.time.Duration
@@ -15,21 +17,34 @@ object DriverFactory {
         if (driverThreadLocal.get() == null) {
             System.setProperty("webdriver.remote.service.tracing.enabled", "false")
 
-            val options = ChromeOptions()
-            options.addArguments("--remote-allow-origins=*")
-            //options.addArguments("--disable-dev-shm-usage")
-            //options.addArguments("--no-sandbox")
-            //options.addArguments("--disable-gpu")
-            //options.addArguments("--disable-extensions")
-            //options.addArguments("--headless=new")
+            val browser = (System.getProperty("browser") ?: System.getenv("browser") ?: "chrome").lowercase()
+            lateinit var driver: WebDriver
+            val executionMode = System.getProperty("execution_mode") ?: System.getenv("execution_mode") ?: "local"
+            val isHeadless = (System.getProperty("headless") ?: System.getenv("headless") ?: "false").toBoolean()
 
-            val executionMode = System.getProperty("execution_mode", "local")
-            val driver: WebDriver
-            if (executionMode.equals("grid", ignoreCase = true)) {
-                val remoteUrl = "http://localhost:4444"
-                driver = RemoteWebDriver(URL(remoteUrl), options)
+            driver = if (browser == "firefox") {
+                val options = FirefoxOptions()
+                if (isHeadless) {
+                    options.addArguments("--headless")
+                }
+                if (executionMode.equals("grid", ignoreCase = true)) {
+                    val remoteUrl = System.getProperty("grid_url") ?: System.getenv("grid_url") ?: "http://localhost:4444"
+                    RemoteWebDriver(URL(remoteUrl), options)
+                } else {
+                    FirefoxDriver(options)
+                }
             } else {
-                driver = ChromeDriver(options)
+                val options = ChromeOptions()
+                options.addArguments("--remote-allow-origins=*")
+                if (isHeadless) {
+                    options.addArguments("--headless=new")
+                }
+                if (executionMode.equals("grid", ignoreCase = true)) {
+                    val remoteUrl = System.getProperty("grid_url") ?: System.getenv("grid_url") ?: "http://localhost:4444"
+                    RemoteWebDriver(URL(remoteUrl), options)
+                } else {
+                    ChromeDriver(options)
+                }
             }
 
             driver.manage().window().maximize()
@@ -50,4 +65,5 @@ object DriverFactory {
             }
         }
     }
+
 }

@@ -1,0 +1,7 @@
+services:
+
+  tests:
+    build: .
+    volumes:
+      - ./target/allure-results:/app/target/allure-results
+    command: /bin/sh -c "rm -rf /app/target/; mvn test"

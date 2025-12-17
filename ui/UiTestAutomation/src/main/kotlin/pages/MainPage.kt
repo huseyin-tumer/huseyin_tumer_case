@@ -7,26 +7,11 @@ import org.hamcrest.Matchers.emptyString
 import org.hamcrest.Matchers.not
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
-import pageFunctions.MainPageFunctions
-
-private class NavBar(driver: WebDriver) : BasePage(driver) {
-    private val platform = By.cssSelector("div.header-menu-item:not(.is-mobile)")
-    private val industries = By.cssSelector("div.header-menu-item:not(.is-mobile)")
-    private val customers = By.cssSelector("div.header-menu-item:not(.is-mobile)")
-    private val resources = By.cssSelector("div.header-menu-item:not(.is-mobile)")
-
-    fun assertNavBarLoaded() {
-        shouldBeVisible(platform, "Platform is not visible")
-        shouldBeVisible(industries, "Industries is not visible")
-        shouldBeVisible(customers, "Customers is not visible")
-        shouldBeVisible(resources, "Resources is not visible")
-    }
-}
+import pageFunctions.SectionFunctions
 
 class MainPage(driver: WebDriver) : BasePage(driver) {
 
-    private val mainPageFunctions = MainPageFunctions(driver)
+    private val sectionFunctions = SectionFunctions(driver)
 
     private val acceptAllCookiesButton = By.cssSelector("a#wt-cli-accept-all-btn")
     private val logo = By.cssSelector("div.header-logo>a")
@@ -47,18 +32,18 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
         By.cssSelector("div.homepage-social-proof-content-link.fadeInUp-scroll.visible a")
 
 
-    private val headerNavigation = By.cssSelector("header#navigation")
-
-    private val capabilitiesSection = By.cssSelector("section.homepage-capabilities.light-theme")
     private val capabilitiesHeader = By.cssSelector("div.homepage-capabilities-head div.title")
     private val capabilitiesDescription = By.cssSelector("div.homepage-capabilities-head div.description")
 
-    private val aiSection = By.cssSelector("section.homepage-insider-one-ai.light-theme")
     private val aiHeaderTitle = By.cssSelector("div.homepage-insider-one-ai-head div.title")
     private val aiHeaderDescription = By.cssSelector("div.homepage-insider-one-ai-head div.description")
 
+    private val channelTitle = By.cssSelector("div.homepage-channels-head .title")
+    private val channelDescription = By.cssSelector("div.homepage-channels-head .description")
 
-    fun open() {
+    private val caseStudySection = By.cssSelector("section.homepage-case-study")
+
+    fun navigate() {
         driver.get(Environment.baseUrl)
     }
 
@@ -73,7 +58,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
     }
 
     fun assertHeroSectionLoaded() {
-        scrollTo(heroSection)
+        sectionFunctions.scrollToSection("homepage-hero")
         shouldBeVisible(heroSection, "Home Page Block is not visible")
         shouldBeVisible(heroSectionHeader, "Home Page Header is not visible")
         shouldBeVisible(heroSectionDescription, "Home Page Description is not visible")
@@ -82,7 +67,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
     }
 
     fun assertSocialProofSectionLoaded() {
-        scrollTo(socialProofSection)
+        sectionFunctions.scrollToSection("homepage-social-proof")
         shouldBeVisible(socialProofSection, "Social Proof is not visible")
         assertImgSource(socialProofAnalystLogo, "https://insiderone.com/assets/media/2025/12/Group-1.svg")
         assertImgSource(socialProofRatingStarImg, "https://insiderone.com/assets/media/2025/12/Stars.svg")
@@ -96,14 +81,14 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
     }
 
     fun assertDifferentiatorSection() {
-        mainPageFunctions.assertDifferentiators()
+        sectionFunctions.scrollToSection("homepage-core-differentiators")
+        sectionFunctions.assertDifferentiators()
     }
 
     fun assertCapabilitiesSection() {
-        // header gets header-light value when scroll to top of capabilities section
-        waitUtil.scrollPageUntilElementAttributeValueContains(headerNavigation, "class", "header-light")
-
-        val capabilitiesSectionElement = find(capabilitiesSection)
+        val section = sectionFunctions.scrollToSection("homepage-capabilities")
+        //waitUtil.scrollPageUntilElementAttributeValueContains(headerNavigation, "class", "header-light")
+        val capabilitiesSectionElement = section
         assertText(
             capabilitiesSectionElement.findElement(capabilitiesHeader),
             "One platform.\nEverything you need. Nothing you don’t."
@@ -112,36 +97,28 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
             capabilitiesSectionElement.findElement(capabilitiesDescription),
             "Insider One connects everything marketing and customer engagement teams need to get ahead and stay ahead."
         )
-
-        mainPageFunctions.assertCapabilities()
+        sectionFunctions.assertCapabilities()
     }
 
     fun assertAiSection() {
-        scrollTo(aiSection)
+        sectionFunctions.scrollToSection("homepage-insider-one-ai")
         assertText(aiHeaderTitle, "Meet Sirius AI™\nThe most complete AI solution for customer engagement")
         assertText(aiHeaderDescription, "Agentic AI. Generative AI. Predictive AI.")
-        mainPageFunctions.assertAi()
+        sectionFunctions.assertAi()
     }
 
-    private val channelSection = By.cssSelector("section.homepage-channels.light-theme")
-    private val channelTitle = By.cssSelector("div.homepage-channels-head .title")
-    private val channelDescription = By.cssSelector("div.homepage-channels-head .description")
-
     fun assertChannelsSection() {
-        scrollTo(channelSection)
-        scrollTo(channelTitle)
+        sectionFunctions.scrollToSection("homepage-channels")
         assertText(channelTitle, "Unmatched channel breadth\nfor unstoppable reach")
         assertText(
             channelDescription,
             "From SMS to WhatsApp, Email to Search, engage your customers wherever and however they choose."
         )
-        mainPageFunctions.assertChannels()
+        sectionFunctions.assertChannels()
     }
 
-    private val caseStudySection = By.cssSelector("section.homepage-case-study")
-
     fun assertCaseStudySection() {
-        scrollTo(caseStudySection)
+        sectionFunctions.scrollToSection("homepage-case-study")
         assertText(find(caseStudySection).findElement(By.cssSelector(".title")), "What brands achieve with Insider One")
         assertText(
             find(caseStudySection).findElement(By.cssSelector(".description")),
@@ -152,33 +129,26 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
             find(caseStudySection).findElement(By.cssSelector(".action a")),
             "https://insiderone.com/case-studies"
         )
-        mainPageFunctions.assertCaseStudies()
+        sectionFunctions.assertCaseStudies()
     }
 
-    private val analystSection = By.cssSelector("section.homepage-analyst")
-
     fun assertAnalystSection() {
-        scrollTo(caseStudySection) // scroll to previous section to prevent empty dom loading
-
-        scrollTo(analystSection)
-
+        val analystSection = sectionFunctions.scrollToSection("homepage-analyst")
         assertText(
-            find(analystSection).findElement(By.cssSelector(".title")),
+            analystSection.findElement(By.cssSelector(".title")),
             "Loved by brands, recognized by analysts"
         )
         assertText(
-            find(analystSection).findElement(By.cssSelector(".description")), """
+            analystSection.findElement(By.cssSelector(".description")), """
             The only vendor ranked #1 in every area marketing teams care about,
             from CDP to personalization to journey orchestration, all in one consolidated solution.
         """.trimIndent()
         )
-        mainPageFunctions.assertAnalysts()
+        sectionFunctions.assertAnalysts()
     }
 
-    private val integrationsSection = By.cssSelector("section.homepage-integrations")
-
     fun assertIntegrationsSection() {
-        val integrationSectionElement = find(integrationsSection)
+        val integrationSectionElement = sectionFunctions.scrollToSection("homepage-integrations")
         scrollTo(integrationSectionElement)
         assertText(
             integrationSectionElement.findElement(By.cssSelector(".title")),
@@ -202,26 +172,10 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
 
     }
 
-    //Use when you can not reach section element
-    fun findSection(classIdentifier: String): WebElement {
-        val sections = findElements(By.cssSelector("main.flexible-layout>section"))
-        sections.forEach { section ->
-            val classValues = section.getAttribute("class")!!.split(" ")
-            if (classValues.contains(classIdentifier))
-                scrollTo(section)
-            return@forEach
-        }
-        return find(By.cssSelector("section.$classIdentifier"))
-    }
-
-
     fun assertResourcesSection() {
-        val section = findSection("homepage-resources")
-        scrollTo(section) //scrolls to bottom of section
-        waitForAnimationToStop(section)
-        scrollIntoView(section) //scrolls to section
+        val section = sectionFunctions.scrollToSection("homepage-resources")
         assertText(section.findElement(By.cssSelector("h2.animated-text")), "ExploreResources")
-        mainPageFunctions.assertResources()
+        sectionFunctions.assertResources()
     }
 
 }

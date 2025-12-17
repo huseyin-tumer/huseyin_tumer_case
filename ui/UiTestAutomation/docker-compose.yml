@@ -1,0 +1,46 @@
+services:
+  selenium:
+    image: selenium/hub
+    ports:
+      - 4442:4442
+      - 4443:4443
+      - 4444:4444
+
+  chrome:
+    image: seleniarm/node-chromium
+    shm_size: 2gb
+    depends_on:
+      - selenium
+    environment:
+      - SE_EVENT_BUS_HOST=selenium
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=10
+
+  firefox:
+    image: selenium/node-firefox
+    shm_size: 2gb
+    depends_on:
+      - selenium
+    environment:
+      - SE_EVENT_BUS_HOST=selenium
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=10
+
+  tests:
+    build: .
+    depends_on:
+      - selenium
+      - chrome
+      - firefox
+    environment:
+      - execution_mode=grid
+      - grid_url=http://selenium:4444
+      - browser=chrome
+      - headless=true
+    volumes:
+      - ./target/allure-results:/app/target/allure-results
+    command: /bin/sh -c "mvn clean test -Dbrowser=$$browser -Dheadless=$$headless -Dexecution_mode=$$execution_mode -Dgrid_url=$$grid_url"
