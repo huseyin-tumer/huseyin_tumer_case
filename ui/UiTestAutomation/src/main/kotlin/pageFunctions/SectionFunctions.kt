@@ -124,27 +124,6 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
                 capabilitySlideElement.findElement(By.cssSelector("div.slide-item-content-text")),
                 capability.description
             )
-
-            /*
-            val capability = capabilities[i]
-
-            find(capabilitiesSection).findElements(capabilitiesButtons)[i].click()
-            assertText(find(capabilitiesSection).findElements(capabilitiesButtons)[i], capability.title)
-
-            val capabilitySlideElement = section.findElement(capabilitySlide)
-            assertAttributeContains(capabilitySlideElement, "class", "swiper-slide-active")
-            assertHref(capabilitySlideElement.findElement(By.cssSelector("a")), capability.url)
-            assertImgSource(capabilitySlideElement.findElement(By.cssSelector("img")), capability.image)
-            assertText(
-                capabilitySlideElement.findElement(By.cssSelector("div.slide-item-content-title")),
-                capability.title
-            )
-            assertText(
-                capabilitySlideElement.findElement(By.cssSelector("div.slide-item-content-text")),
-                capability.description
-            )
-             */
-
         }
     }
 
@@ -160,7 +139,7 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
         for (i in aiItems.indices) {
             val aiItem = aiItems[i]
             val aiItemElement = aiElements[i]
-            aiItemElement.click()
+            jsClick(aiItemElement)
             waitForAnimationToStop(aiItemElement)
             assertText(aiItemElement.findElement(aiSubTitle), aiItem.subTitle)
             assertText(aiItemElement.findElement(aiTitle), aiItem.title)
@@ -220,12 +199,12 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
             assertText(caseStudyElement.findElement(caseStudyInfoNumber), caseStudyItem.number)
             assertText(caseStudyElement.findElement(caseStudyInfoText), caseStudyItem.text)
 
-            assertDisplayed(caseStudyElement.findElement(caseStudyPictureImg))
+            shouldBeVisible(caseStudyElement.findElement(caseStudyPictureImg))
             assertImgSource(caseStudyElement.findElement(caseStudyPictureImg), caseStudyItem.image)
 
             assertAttribute(caseStudyElement.findElement(caseStudyPictureSource), "srcset", caseStudyItem.image)
 
-            assertDisplayed(caseStudyElement.findElement(caseStudyCustomerLogo))
+            shouldBeVisible(caseStudyElement.findElement(caseStudyCustomerLogo))
             assertImgSource(caseStudyElement.findElement(caseStudyCustomerLogo), caseStudyItem.customerLogo)
 
             assertText(caseStudyElement.findElement(caseStudyDescription), caseStudyItem.description)
@@ -250,16 +229,16 @@ class SectionFunctions(driver: WebDriver) : BasePage(driver) {
         for (i in analystItems.indices) {
             val analystItem = analystItems[i]
             val slideButton = findElements(analystButtons)[i]
-            scrollTo(slideButton)
+            scrollIntoView(slideButton)
             assertText(slideButton, analystItem.buttonText)
             jsClick(slideButton)
 
             val analystSlide = analystSlides[i]
-            scrollTo(By.cssSelector("div.homepage-analyst-body-slider.fadeInUp-scroll"))
+            scrollIntoView(By.cssSelector("div.homepage-analyst-body-slider.fadeInUp-scroll"))
 
             assertAttributeHasValue(analystSlide, "class", "swiper-slide-fully-visible")
 
-            assertDisplayed(analystSlide.findElement(analystLogo))
+            shouldBeVisible(analystSlide.findElement(analystLogo))
             assertImgSource(analystSlide.findElement(analystLogo), analystItem.logo)
             assertText(analystSlide.findElement(analystContentInfo), analystItem.text)
             if (analystItem.url.isNotEmpty() && analystItem.actionText.isNotEmpty()) {

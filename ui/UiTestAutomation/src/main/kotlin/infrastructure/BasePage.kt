@@ -28,7 +28,7 @@ abstract class BasePage(protected val driver: WebDriver) {
     val js = driver as JavascriptExecutor
 
     protected fun find(locator: By): WebElement {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator))!!
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator))!!
     }
 
     protected fun findElements(locator: By): List<WebElement> {
@@ -40,10 +40,37 @@ abstract class BasePage(protected val driver: WebDriver) {
         return driver.findElements(locator)
     }
 
-    protected fun waitForElementsVisible(locator: By): List<WebElement> {
+    protected fun waitForElementsVisible(
+        locator: By,
+        scroll: Boolean = false
+    ): List<WebElement> {
+
         wait.until(
             ExpectedConditions.and(
-                ExpectedConditions.visibilityOfAllElements(findElements(locator)),
+                ExpectedConditions.presenceOfAllElementsLocatedBy(locator),
+                ExpectedConditions.numberOfElementsToBeMoreThan(locator, 0),
+            )
+        )
+
+        if (scroll) {
+            scrollIntoView(findElements(locator)[0])
+        }
+
+        wait.until(
+            ExpectedConditions.and(
+                ExpectedConditions.visibilityOf(findElements(locator)[0]),
+            )
+        )
+        return driver.findElements(locator)
+    }
+
+    protected fun waitForElementsLocated(
+        locator: By,
+    ): List<WebElement> {
+        wait.until(
+            ExpectedConditions.and(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(locator),
+                ExpectedConditions.numberOfElementsToBeMoreThan(locator, 0),
             )
         )
         return driver.findElements(locator)
@@ -53,13 +80,41 @@ abstract class BasePage(protected val driver: WebDriver) {
     @Step("Verify element located by {selector} is visible")
     protected fun shouldBeVisible(
         selector: By,
-        message: String = "Element should be visible, selector: ${selector.toString()}"
+        message: String = "Element should be visible, selector: ${selector.toString()}",
+        scroll: Boolean = false,
     ) {
+        wait.until(
+            ExpectedConditions.and(
+                ExpectedConditions.presenceOfElementLocated(selector),
+            )
+        )
+
+        if (scroll) {
+            scrollIntoView(selector)
+            waitForAnimationToStop(selector)
+        }
+
+        wait.until(
+            ExpectedConditions.and(
+                ExpectedConditions.visibilityOf(find(selector)),
+            )
+        )
         assertThat(message, find(selector).isDisplayed, `is`(true))
     }
 
+    @Step("Verify element {element} is displayed")
+    fun shouldBeVisible(
+        element: WebElement,
+        message: String = """
+            Element img visibility assertion failed
+        """.trimIndent()
+    ) {
+        wait.until(ExpectedConditions.visibilityOf(element))
+        assertThat(message, element.isDisplayed, `is`(true))
+    }
+
     protected fun click(locator: By) {
-        find(locator).click()
+        wait.until(ExpectedConditions.elementToBeClickable(locator))!!.click()
     }
 
     protected fun click(element: WebElement) {
@@ -89,6 +144,7 @@ abstract class BasePage(protected val driver: WebDriver) {
         Selector $locator
     """.trimIndent()
     ) {
+        wait.until(ExpectedConditions.textToBe(locator, text))
         assertThat(message, find(locator).text, equalTo(text))
     }
 
@@ -101,6 +157,7 @@ abstract class BasePage(protected val driver: WebDriver) {
             Selector ${element.getSelector()}
         """.trimIndent()
     ) {
+        element.waitForHasNotEmptyText()
         assertThat(message, element.text, equalTo(text))
     }
 
@@ -223,17 +280,6 @@ abstract class BasePage(protected val driver: WebDriver) {
             assertThat(message, element.size, equalTo(length))
     }
 
-    @Step("Verify element {element} is displayed")
-    fun assertDisplayed(
-        element: WebElement,
-        message: String = """
-            Element img visibility assertion failed
-        """.trimIndent()
-    ) {
-        wait.until(ExpectedConditions.visibilityOf(element))
-        assertThat(message, element.isDisplayed, `is`(true))
-    }
-
     protected fun scrollTo(locator: By) {
         Actions(driver).scrollToElement(find(locator))
             .perform()
@@ -248,6 +294,10 @@ abstract class BasePage(protected val driver: WebDriver) {
 
     protected fun scrollIntoView(element: WebElement) {
         js.executeScript("arguments[0].scrollIntoView(true);", element)
+    }
+
+    protected fun scrollIntoView(locator: By) {
+        js.executeScript("arguments[0].scrollIntoView(true);", find(locator))
     }
 
     protected fun scrollPage(x: Int = 0, y: Int = 0) {
@@ -269,14 +319,14 @@ abstract class BasePage(protected val driver: WebDriver) {
     fun waitForDomToStabilize() {
         js.executeScript(
             """
-        if (!window.seleniumMutationObserver) {
-            window.lastDomMutation = Date.now();
-            window.seleniumMutationObserver = new MutationObserver(() => {
+            if (!window.seleniumMutationObserver) {
                 window.lastDomMutation = Date.now();
-            });
-            window.seleniumMutationObserver.observe(document.body, { attributes: true, childList: true, subtree: true });
-        }
-    """
+                window.seleniumMutationObserver = new MutationObserver(() => {
+                    window.lastDomMutation = Date.now();
+                });
+                window.seleniumMutationObserver.observe(document.body, { attributes: true, childList: true, subtree: true });
+            }
+        """
         )
 
         Awaitility.await()
@@ -287,7 +337,6 @@ abstract class BasePage(protected val driver: WebDriver) {
                 val lastMutationTime = js.executeScript("return window.lastDomMutation || 0") as Long
                 val currentTime = System.currentTimeMillis()
 
-                // Stable if no changes for at least 500ms
                 (currentTime - lastMutationTime) > 500
             }
     }
@@ -303,6 +352,22 @@ abstract class BasePage(protected val driver: WebDriver) {
                     true
                 else {
                     lastRect = element.rect
+                    false
+                }
+            }
+    }
+
+    fun waitForAnimationToStop(locator: By) {
+        var lastRect = find(locator).rect
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(10))
+            .pollInterval(Duration.ofMillis(100))
+            .until {
+                val currentRect = find(locator).rect
+                if (lastRect == currentRect)
+                    true
+                else {
+                    lastRect = find(locator).rect
                     false
                 }
             }

@@ -63,7 +63,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
     fun assertHeroSectionLoaded() {
         sectionFunctions.scrollToSection("homepage-hero")
         shouldBeVisible(heroSection, "Home Page Block is not visible")
-        shouldBeVisible(heroSectionHeader, "Home Page Header is not visible")
+        shouldBeVisible(heroSectionHeader, "Home Page Header is not visible", scroll = true)
         shouldBeVisible(heroSectionDescription, "Home Page Description is not visible")
         shouldBeVisible(heroSectionEmail, "Input Email is not visible")
         shouldBeVisible(heroSectionRedirectButton, "Redirect Button is not visible")
@@ -176,7 +176,7 @@ class MainPage(driver: WebDriver) : BasePage(driver) {
 
         assertHref(exploreIntegrationsLink, "https://insiderone.com/integrations/")
 
-        assertDisplayed(
+        shouldBeVisible(
             integrationSectionElement.findElement(By.cssSelector("img.desktop-image")),
             "https://insiderone.com/assets/media/2025/11/comp-9-media-scaled.png"
         )

@@ -28,7 +28,7 @@ class OpenPositionsPage(driver: WebDriver) : BasePage(driver) {
 
     @Step("Verify open positions list matches expected positions")
     fun assertPositions(expectedPositions: Array<Position>) {
-        val positionsElements = waitForElementsVisible(positions)
+        val positionsElements = waitForElementsLocated(positions)
         assertElementsLength(positionsElements, expectedPositions.size)
         for (i in expectedPositions.indices) {
             val expectedPosition = expectedPositions[i]
