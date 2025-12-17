@@ -60,7 +60,32 @@ After running the tests (locally or via Docker), you can view the report by runn
 ```
 
 *Note: The script assumes a local Allure binary at `.allure/allure-2.36.0/bin/allure`. If you have Allure installed globally, you can simply run:*
-
 ```bash
 allure serve target/allure-results
 ```
+
+### ⚙️ Allure Maven configuration
+
+- **Results directory**  
+  - Configured via `maven-surefire-plugin` system property:  
+    `allure.results.directory = ${project.build.directory}/allure-results`  
+  - Effective path at runtime: **`target/allure-results`** (also mounted out of the Docker container).
+
+- **Report generation plugin**  
+  - Maven plugin: `io.qameta.allure:allure-maven`  
+  - **`resultsDirectory`**: points to `${project.build.directory}/allure-results`  
+  - **`reportDirectory`**: points to `${project.build.directory}/allure-report` (HTML output).
+
+- **Allure CLI download URL**  
+  - The plugin is configured with an `allureDownloadUrl` that tells Maven where to download the Allure Commandline ZIP.  
+  - You can change this URL (e.g. to an internal Nexus/Artifactory) without changing test code; only the `pom.xml` needs to be updated.
+
+- **Useful Maven goals**  
+  - Generate report after tests:  
+    ```bash
+    mvn allure:report
+    ```  
+  - Generate and serve report locally (temporary directory):  
+    ```bash
+    mvn allure:serve
+    ```
