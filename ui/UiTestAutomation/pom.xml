@@ -13,7 +13,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <environment>prod</environment>
-        <browser>firefox</browser>
+        <browser>chrome</browser>
         <headless>false</headless>
         <aspectj.version>1.9.21</aspectj.version>
     </properties>
@@ -76,11 +76,6 @@
                         <version>${aspectj.version}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
             </plugin>
         </plugins>
     </build>
